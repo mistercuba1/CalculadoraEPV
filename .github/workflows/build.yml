@@ -1,0 +1,34 @@
+name: Build Python Executable
+on: [push]  # Se ejecuta cada vez que haces un push al repositorio
+
+jobs:
+  build:
+    runs-on: windows-latest  # Usa un entorno Windows (necesario para .exe)
+    
+    steps:
+      # 1. Checkout del código
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Configurar Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'  # Cambia a tu versión de Python
+
+      # 3. Instalar PyInstaller y dependencias
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          # pip install -r requirements.txt  # Si tienes dependencias
+
+      # 4. Compilar el ejecutable con PyInstaller
+      - name: Build EXE
+        run: pyinstaller --onefile --noconsole --clean --name "CalculadoraEPV" tesis3.py
+
+      # 5. Subir el .exe como "artifact" (para descargarlo luego)
+      - name: Upload Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: CalculadoraEPV.exe
+          path: dist/CalculadoraEPV.exe
